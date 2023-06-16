@@ -1,4 +1,5 @@
 import React from 'react'
+import SUCCESS from '../../assets/check.png';
 
 interface IProps {
   count: number
@@ -7,7 +8,7 @@ interface IProps {
 const Success: React.FC<IProps> = ({ count }) => {
   return (
     <div className="success-block">
-      <img src="/assets/success.svg" alt="Success" />
+      <img src={SUCCESS} alt="Success" />
       <h3>Успешно!</h3>
       <p>Всем {count} пользователям отправлено приглашение.</p>
       <button className="send-invite-btn">Назад</button>
