@@ -1,18 +1,15 @@
-import React, {ChangeEvent, useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import './index.scss'
-// import Success from "./components/Success/Success";
 import Users from "./components/Users";
-
-// Here's list users: https://reqres.in/api/users
-
-// interface IHandleSearchValue {
-//     target: HTMLInputElement
-// }
+import Success from "./components/Success/Success";
+import {TUser} from "./types";
 
 const App = () => {
-    const [users, setUsers] = useState([]);
-    const [isLoading, setLoading] = useState(true);
-    const [searchValue, setSearchValue] = useState('');
+    const [users, setUsers] = useState<TUser[]>([]);
+    const [isLoading, setLoading] = useState<boolean>(true);
+    const [searchValue, setSearchValue] = useState<string>('');
+    const [invites, setInvites] = useState<number[]>([]);
+    const [success, setSuccess] = useState<boolean>(false);
 
     useEffect(() => {
         fetch(`https://reqres.in/api/users`).then(res => res.json()).then(json => {
@@ -28,17 +25,36 @@ const App = () => {
         setSearchValue(event.currentTarget.value);
     }
 
+    const onClickInvite = (id: number) => {
+        if (invites.includes(id)) {
+            setInvites(prev => prev.filter(_id => _id !== id))
+        } else {
+            setInvites(prev => [...prev, id])
+        }
+    };
+
+    const onClickSendInvites = () => {
+        setSuccess(true)
+    };
 
     return (
-    <div className="App">
-        <Users items={users}
-               isLoading={isLoading}
-               onChangeSearchValue={onChangeSearchValue}
-               searchValue={searchValue}
-        />
-       {/*<Success />*/}
-    </div>
-  )
+        <div className="App">
+            {
+                success ? <Success count={invites.length}/>
+                    : (
+                        <Users items={users}
+                               isLoading={isLoading}
+                               onChangeSearchValue={onChangeSearchValue}
+                               searchValue={searchValue}
+                               invites={invites}
+                               onClickInvite={onClickInvite}
+                               onClickSendInvites={onClickSendInvites}
+                        />
+                    )
+            }
+
+        </div>
+    )
 }
 
 export default App
